@@ -140,7 +140,10 @@ class Builder:
         return content
 
     def _write(self, new_path: Path, data):
-        new_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            new_path.parent.mkdir(parents=True)
+        except FileExistsError:
+            pass
         new_path.write_text(data)
 
 
@@ -179,7 +182,10 @@ class SassGenerator:
         self._errors, self._files_generated = 0, 0
 
         if self._debug:
-            self._out_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                self._out_dir.mkdir(parents=True)
+            except FileExistsError:
+                pass
             if self._out_dir_src.exists():
                 raise GrablibError('With debug switched on the directory "{}" must not exist before building, '
                                    'you should delete it with the "wipe" option.'.format(self._out_dir_src))
@@ -227,7 +233,10 @@ class SassGenerator:
             return
         log_msg = None
         try:
-            css_path.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                css_path.parent.mkdir(parents=True)
+            except FileExistsError:
+                pass
             if self._debug:
                 css, css_map = css
                 # correct the link to map file in css

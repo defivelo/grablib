@@ -231,7 +231,10 @@ class Downloader:
             return r.content
 
     def _write(self, new_path: Path, data: bytes, url: str):
-        new_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            new_path.parent.mkdir(parents=True)
+        except FileExistsError:
+            pass
         new_path.write_bytes(data)
         h = self._path_hash(new_path)
         self._lock(url, str(new_path.relative_to(self.download_root)), h)
