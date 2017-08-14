@@ -3,7 +3,8 @@ from pathlib import Path
 from setuptools import setup
 
 description = 'Utility for defining then downloading and preprocessing external static files.'
-long_description = Path(__file__).resolve().parent.joinpath('README.rst').read_text()
+with Path(__file__).resolve().parent.joinpath('README.rst').open() as f:
+    long_description = f.read()
 
 # importing just this file avoids importing the full package with external dependencies which might not be installed
 version = SourceFileLoader('version', 'grablib/version.py').load_module()
