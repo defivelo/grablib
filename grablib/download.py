@@ -235,7 +235,8 @@ class Downloader:
             new_path.parent.mkdir(parents=True)
         except FileExistsError:
             pass
-        new_path.write_bytes(data)
+        with new_path.open('wb') as f:
+            f.write(data)
         h = self._path_hash(new_path)
         self._lock(url, str(new_path.relative_to(self.download_root)), h)
 
@@ -254,7 +255,8 @@ class Downloader:
     def _path_hash(self, path: Path):
         if not path.exists():
             return
-        data = path.read_bytes()
+        with path.open('rb') as f:
+            data = f.read()
         return self._data_hash(data)
 
     def _data_hash(self, data: bytes):
@@ -302,4 +304,5 @@ class Downloader:
             )
             text += '\n'.join('{} {} {}'.format(h, STALE, n) for n, h in sorted(self._stale_files.items()))
         text += '\n'
-        self._lock_file.write_text(text)
+        with self._lock_file.open('w') as f:
+            f.write(text)
